@@ -68,7 +68,8 @@ public class UserService : IUserService
             throw new KeyNotFoundException("User not found");
 
         // validate
-        if (await _userRepository.GetByEmail(model.Email!) != null)
+        var emailChanged = !string.IsNullOrEmpty(model.Email) && user.Email != model.Email;
+        if (emailChanged && await _userRepository.GetByEmail(model.Email!) != null)
             throw new AppException("User with the email '" + model.Email + "' already exists");
 
         // hash password if it was entered
